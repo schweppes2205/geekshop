@@ -1,15 +1,16 @@
-import datetime
-import json
-from django.shortcuts import render
 from django.conf import settings
+from django.shortcuts import render
 from django.utils import timezone
 
-from .models import Product, ProductCategory
+from .models import Contact, Product, ProductCategory
+
 
 def main(request):
     title = "главная"
-    products = Product.objects.all()
-    content = {"title": title, "products": products}
+
+    products = Product.objects.all()[:4]
+
+    content = {"title": title, "products": products, "media_url": settings.MEDIA_URL}
     return render(request, "mainapp/index.html", content)
 
 
@@ -30,9 +31,7 @@ def products(request, pk=None):
 
 def contact(request):
     title = "о нас"
-    visit_date = datetime.datetime.now()
-    with open("static/dbInFile/locations.json",encoding="utf-8") as file_descriptor:
-        locations_raw_data = file_descriptor.read()
-    locations = json.loads(locations_raw_data)
+    visit_date = timezone.now()
+    locations = Contact.objects.all()
     content = {"title": title, "visit_date": visit_date, "locations": locations}
     return render(request, "mainapp/contact.html", content)
